@@ -75,11 +75,133 @@ const addBookHandler = (request, h) => {
 
 //API dapat menampilkan seluruh buku
 const getAllBookHandler = (request, h) => {
-    let detailBooks = [];
+	let {name, reading, finished } = request.query;
+
+	let getByName = [];
+	let getByReading = [];
+	let getByFinished = [];
+	let getBooks = [];
+
+	//Nama berdasarkan value query
+	if (typeof name === 'string') {
+		if (name !== undefined) {
+			books.forEach((book) => {
+				let bookName = book.name.toLowerCase();
+				name = name.toLowerCase();
+
+				if (bookName.includes(name)) {
+					getByName.push({
+						id: book.id,
+						name: book.name,
+						publisher: book.publisher,
+					});
+				}
+			});
+		}
+
+		const response = h.response({
+			status: 'success',
+			data: {
+				books: getByName,
+			},
+		});
+		response.code(200);
+		return response;
+	}
+
+	//Buku sedang dibaca/tidak dibaca
+	if (reading === '0') {
+		getByReading = [];
+
+		books.forEach((book) => {
+			if (!book.reading) {
+				getByReading.push({
+					id: book.id,
+					name: book.name,
+					publisher: book.publisher,
+				});
+			}
+		});
+
+		const response = h.response({
+			status: 'success',
+			data: {
+				books: getByReading,
+			},
+		});
+		response.code(200);
+		return response;
+	} else if (reading === '1') {
+		getByReading = [];
+
+		books.forEach((book) => {
+			if (book.reading) {
+				getByReading.push({
+					id: book.id,
+					name: book.name,
+					publisher: book.publisher,
+				});
+			}
+		});
+
+		const response = h.response({
+			status: 'success',
+			data: {
+				books: getByReading,
+			},
+		});
+		response.code(200);
+		return response;
+	}
+
+	//Buku sudah/belum selesai dibaca
+	if (finished === '0') {
+		getByFinished = [];
+
+		books.forEach((book) => {
+			if (!book.finished) {
+				getByFinished.push({
+					id: book.id,
+					name: book.name,
+					publisher: book.publisher,
+				});
+			}
+		});
+
+		const response = h.response({
+			status: 'success',
+			data: {
+				books: getByFinished,
+			},
+		});
+		response.code(200);
+		return response;
+	} else if (finished === '1') {
+		getByFinished = [];
+
+		books.forEach((book) => {
+			if (book.finished) {
+				getByFinished.push({
+					id: book.id,
+					name: book.name,
+					publisher: book.publisher,
+				});
+			}
+		});
+
+		const response = h.response({
+			status: 'success',
+			data: {
+				books: getByFinished,
+			},
+		});
+		response.code(200);
+		return response;
+	}
 
 	if (books.length > 0) {
 		books.forEach((book) => {
-			detailBooks.push({
+			getBooks.push({
 				id: book.id,
 				name: book.name,
 				publisher: book.publisher,
@@ -89,7 +211,7 @@ const getAllBookHandler = (request, h) => {
 		const response = h.response({
 			status: 'success',
 			data: {
-				books: detailBooks,
+				books: getBooks,
 			},
 		});
 		response.code(200);
